@@ -123,20 +123,21 @@ public class Main {
     private static void listarPaciente() throws SQLException, DAOException {
         MySQLManager gestor = new MySQLManager();
         List<Paciente> pacientes = gestor.getPacienteDAO().getALl(); // Llamada al método listar del gestor para obtener la lista de pacientes
-        pacientes.forEach(paciente -> System.out.printf("%-4d%-20s%-20s%-8d%-15s%-21s%-17d%-15d%8s%n",
-                paciente.getId(), paciente.getNombre(), paciente.getApellido(), paciente.getEdad(),
-                paciente.getTelefono(), paciente.getCorreoElectronico(), paciente.getTensionArterialSistolica(),
-                paciente.getTensionArterialDiastolica(),paciente.getCalculoDeRiesgo()));
+
+        for (Paciente paciente : pacientes) {
+            System.out.println(paciente);
+        }
     }
 
     private static void buscarPaciente() throws SQLException, DAOException {
         MySQLManager gestor = new MySQLManager();
+        cabeceraListarAlumnos();
+        listarPaciente();
         System.out.print("Ingrese el id del alumno a buscar: ");
         Long id = scannerNum.nextLong();
         Paciente paciente = gestor.getPacienteDAO().getById(id);
-
-            System.out.printf("%-4d%-20s%-20s%-8d%-20s%-8s%-16d%-8d%-8s%n",
-                    paciente.getId(), paciente.getNombre(), paciente.getApellido(), paciente.getEdad(), paciente.getTelefono(), paciente.getCorreoElectronico(), paciente.getTensionArterialSistolica(),paciente.getTensionArterialDiastolica(),paciente.getCalculoDeRiesgo());
+            cabeceraListarAlumnos();
+        System.out.println(paciente);
 
 
     }

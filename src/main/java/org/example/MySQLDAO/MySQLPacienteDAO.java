@@ -8,17 +8,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// implementamos la interfas Paciente dao
 public class MySQLPacienteDAO implements PacienteDao
 {
     // coneccion con la base de datos
     private final Connection conn;
-    final String INSERT = "INSERT INTO paciente_jdbc.paciente(nombre,apellido,edad,telefono,correo,sistolica,diastolica,cardiopatia) VALUE(?,?,?,?,?,?,?,?)";
-    final String UPDATE = "UPDATE paciente_jdbc.paciente SET nombre = ?,apellido = ?,edad = ?,telefono = ?,correo = ?,sistolica = ?,diastolica = ? where id = ? ";
-    final String DELETE = "DELETE from paciente_jdbc.paciente where id = ?";
-    final String GETALL = "SELECT id,nombre,apellido,edad,telefono,correo,sistolica,diastolica,cardiopatia from paciente_jdbc.paciente";
-    final String GETONE = "SELECT id,nombre,apellido,edad,telefono,correo,sistolica,diastolica,cardiopatia from paciente_jdbc.paciente where id = ?";
+
+    // consultas ya definidas para evitar inyeccion de sql
+   private static final String INSERT = "INSERT INTO paciente_jdbc.paciente(nombre,apellido,edad,telefono,correo,sistolica,diastolica,cardiopatia) VALUE(?,?,?,?,?,?,?,?)";
+   private static final String UPDATE = "UPDATE paciente_jdbc.paciente SET nombre = ?,apellido = ?,edad = ?,telefono = ?,correo = ?,sistolica = ?,diastolica = ? where id = ? ";
+   private static final String DELETE = "DELETE from paciente_jdbc.paciente where id = ?";
+   private static final String GETALL = "SELECT id,nombre,apellido,edad,telefono,correo,sistolica,diastolica,cardiopatia from paciente_jdbc.paciente";
+   private static final String GETONE = "SELECT id,nombre,apellido,edad,telefono,correo,sistolica,diastolica,cardiopatia from paciente_jdbc.paciente where id = ?";
 
 
+    // contructor con la coneccion incluida luego explico por que
     public MySQLPacienteDAO(Connection conn) {
         this.conn = conn;
     }
@@ -26,22 +30,22 @@ public class MySQLPacienteDAO implements PacienteDao
 
 
     @Override
-    public void insertar(Paciente a) throws DAOException
+    public void insertar(Paciente a) throws DAOException , SQLException
     {
-        PreparedStatement stat = null;
+        PreparedStatement statement = null;
 
         try {
-            stat = conn.prepareStatement(INSERT);
-            stat.setString(1,a.getNombre());
-            stat.setString(2,a.getApellido());
-            stat.setInt(3,a.getEdad());
-            stat.setString(4,a.getTelefono());
-            stat.setString(5,a.getCorreoElectronico());
-            stat.setDouble(6,a.getTensionArterialSistolica());
-            stat.setDouble(7,a.getTensionArterialDiastolica());
+            statement = conn.prepareStatement(INSERT);
+            statement.setString(1,a.getNombre());
+            statement.setString(2,a.getApellido());
+            statement.setInt(3,a.getEdad());
+            statement.setString(4,a.getTelefono());
+            statement.setString(5,a.getCorreoElectronico());
+            statement.setDouble(6,a.getTensionArterialSistolica());
+            statement.setDouble(7,a.getTensionArterialDiastolica());
             a.calculoDeRiesgo();
-            stat.setString(8,a.getCalculoDeRiesgo());
-            if (stat.executeUpdate() == 0)
+            statement.setString(8,a.getCalculoDeRiesgo());
+            if (statement.executeUpdate() == 0)
             {
                 throw new DAOException("Puede que no se haya guardado el registro");
             } else {
@@ -51,13 +55,13 @@ public class MySQLPacienteDAO implements PacienteDao
         {
             throw new DAOException("Error en sql", e);
         } finally {
-            cerrarStat(stat);
+            cerrarStat(statement);
         }
 
     }
 
     @Override
-    public void modificar(Paciente a) throws DAOException
+    public void modificar(Paciente a) throws DAOException, SQLException
     {
         PreparedStatement stat = null;
 
@@ -88,7 +92,7 @@ public class MySQLPacienteDAO implements PacienteDao
     }
 
     @Override
-    public void elimanar(Long id) throws DAOException
+    public void elimanar(Long id) throws DAOException, SQLException
     {
         PreparedStatement stat = null;
 
@@ -109,7 +113,7 @@ public class MySQLPacienteDAO implements PacienteDao
     }
 
     @Override
-    public List<Paciente> getALl() throws DAOException {
+    public List<Paciente> getALl() throws DAOException, SQLException {
         PreparedStatement stat = null;
         ResultSet rs = null;
         List<Paciente> pacientes = new ArrayList<>();
@@ -117,7 +121,7 @@ public class MySQLPacienteDAO implements PacienteDao
         try {
             stat = conn.prepareStatement(GETALL);
             rs = stat.executeQuery();
-        while (rs.next())
+        while(rs.next())
         {
             pacientes.add(convertir(rs));
 
@@ -133,7 +137,7 @@ public class MySQLPacienteDAO implements PacienteDao
     }
 
     @Override
-    public Paciente getById(Long id) throws DAOException
+    public Paciente getById(Long id) throws DAOException, SQLException
     {
         PreparedStatement stat = null;
         ResultSet rs = null;
@@ -159,7 +163,7 @@ public class MySQLPacienteDAO implements PacienteDao
 
     }
 
-    private void cerrarStat(PreparedStatement stat) throws DAOException {
+    private void cerrarStat(PreparedStatement stat) throws DAOException, SQLException {
         if (stat != null) {
             try {
                 stat.close();
@@ -169,7 +173,7 @@ public class MySQLPacienteDAO implements PacienteDao
         }
     }
 
-    private void cerrarRs(ResultSet rs)throws DAOException
+    private void cerrarRs(ResultSet rs)throws DAOException, SQLException
     {
         if (rs != null) {
             try {
@@ -180,7 +184,7 @@ public class MySQLPacienteDAO implements PacienteDao
         }
     }
 
-    private Paciente convertir(ResultSet rs)throws SQLException
+    private Paciente convertir(ResultSet rs)throws SQLException, DAOException
     {
         String nombre = rs.getString("nombre");
         String apellido = rs.getString("apellido");

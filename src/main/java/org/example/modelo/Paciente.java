@@ -2,19 +2,22 @@ package org.example.modelo;
 
 public class Paciente
 {
-    private Long id = null;
-    private String nombre;
-    private String apellido;
-    private int edad;
-    private String telefono;
-    private String correoElectronico;
-    private int TensionArterialSistolica;
-    private int TensionArterialDiastolica;
-    private String calculoDeRiesgo;
+    // datos del paciente
+    private Long id; // lo he puesto null porque se autoIncrementa en la base de datos
+    private String nombre; // nombre del paciente
+    private String apellido; // apellido del paciente
+    private int edad; // edad del paciente
+    private String telefono; //telefono de la empresa
+    private String correoElectronico; //correo del paciente
+    private int TensionArterialSistolica; // presion sitolica
+    private int TensionArterialDiastolica; // presion diastolica
+    private String calculoDeRiesgo; // el calculo de riegso
 
+    // contructor vacio
     public Paciente() {
     }
 
+    //contructor con parametros
     public Paciente(String nombre, String apellido, int edad, String telefono, String correoElectronico, int tensionArterialSimbolica, int tensionArterialDiastolica) {
         this.id = getId();
         this.nombre = nombre;
@@ -27,6 +30,7 @@ public class Paciente
         calculoDeRiesgo();
     }
 
+    // getters y setters
     public Long getId() {
         return id;
     }
@@ -101,6 +105,7 @@ public class Paciente
         return calculoDeRiesgo;
     }
 
+    // calculamos el calculo de riesgo mediante una conficion if/else y se asigna a nuestra variaible calculo de riesgo
     public void calculoDeRiesgo()
     {
         if(this.getEdad() < 45 && this.getTensionArterialSistolica() < 130 && this.getTensionArterialDiastolica() < 85){
@@ -126,19 +131,12 @@ public class Paciente
         }
     }
 
+    // mostrar los datos del paciente
     @Override
     public String toString() {
-        return "Paciente{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", edad=" + edad +
-                ", numeroTelefono=" + telefono +
-                ", correoElectronico='" + correoElectronico + '\'' +
-                ", TensionArterialSistolica=" + TensionArterialSistolica +
-                ", TensionArterialDiastolica=" + TensionArterialDiastolica +
-                ", calculoDeRiesgo='" + calculoDeRiesgo + '\'' +
-                '}';
+        return String.format("%-4d%-20s%-20s%-8d%-15s%-21s%-17d%-15d%8s%n", getId(), getNombre(), getApellido(), getEdad(),
+                               getTelefono(), getCorreoElectronico(), getTensionArterialSistolica(),
+                                getTensionArterialDiastolica(),getCalculoDeRiesgo());
     }
 
 }
