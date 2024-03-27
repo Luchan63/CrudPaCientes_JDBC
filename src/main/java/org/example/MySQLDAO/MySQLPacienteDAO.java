@@ -10,6 +10,7 @@ import java.util.List;
 
 public class MySQLPacienteDAO implements PacienteDao
 {
+    // coneccion con la base de datos
     private final Connection conn;
     final String INSERT = "INSERT INTO paciente_jdbc.paciente(nombre,apellido,edad,telefono,correo,sistolica,diastolica,cardiopatia) VALUE(?,?,?,?,?,?,?,?)";
     final String UPDATE = "UPDATE paciente_jdbc.paciente SET nombre = ?,apellido = ?,edad = ?,telefono = ?,correo = ?,sistolica = ?,diastolica = ? where id = ? ";
@@ -197,21 +198,4 @@ public class MySQLPacienteDAO implements PacienteDao
 
         return paciente;
     }
-
-//    public static void main(String[] args) throws SQLException, DAOException {
-//
-//        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/paciente_jdbc","root","");
-//        MySQLPacienteDAO mySQLPacienteDAO = new MySQLPacienteDAO(connection);
-//
-////        List<Paciente> paciente = mySQLPacienteDAO.getALl();
-////
-////        paciente.stream().forEach(System.out::println);
-//
-////        Paciente paciente = new Paciente("Luis","figuereo",28,"624295032","juan@gmail.com",50,120);
-////        paciente.setId(1L);
-//
-//        Paciente paciente = mySQLPacienteDAO.getById(1L);
-//        System.out.println(paciente);
-//
-//    }
 }
