@@ -63,19 +63,19 @@ public class MySQLPacienteDAO implements PacienteDao
     @Override
     public void modificar(Paciente a) throws DAOException, SQLException
     {
-        PreparedStatement stat = null;
+        PreparedStatement statement = null;
 
         try {
-        stat = conn.prepareStatement(UPDATE);
-        stat.setString(1,a.getNombre());
-        stat.setString(2,a.getApellido());
-        stat.setInt(3,a.getEdad());
-        stat.setString(4,a.getTelefono());
-        stat.setString(5,a.getCorreoElectronico());
-        stat.setDouble(6,a.getTensionArterialSistolica());
-        stat.setDouble(7,a.getTensionArterialDiastolica());
-        stat.setLong(8,a.getId());
-        if (stat.executeUpdate() == 0)
+        statement = conn.prepareStatement(UPDATE);
+            statement.setString(1,a.getNombre());
+            statement.setString(2,a.getApellido());
+            statement.setInt(3,a.getEdad());
+            statement.setString(4,a.getTelefono());
+            statement.setString(5,a.getCorreoElectronico());
+            statement.setDouble(6,a.getTensionArterialSistolica());
+            statement.setDouble(7,a.getTensionArterialDiastolica());
+        statement.setLong(8,a.getId());
+        if (statement.executeUpdate() == 0)
         {
             throw new DAOException("Puede que no se haya actualizado el registro");
         } else {
@@ -85,7 +85,7 @@ public class MySQLPacienteDAO implements PacienteDao
         {
             throw new DAOException("Error en sql", e);
         } finally {
-            cerrarStat(stat);
+            cerrarStat(statement);
         }
 
 
@@ -94,12 +94,12 @@ public class MySQLPacienteDAO implements PacienteDao
     @Override
     public void elimanar(Long id) throws DAOException, SQLException
     {
-        PreparedStatement stat = null;
+        PreparedStatement statement = null;
 
         try {
-            stat = conn.prepareStatement(DELETE);
-            stat.setLong(1,id);
-            if (stat.executeUpdate() == 0)
+            statement = conn.prepareStatement(DELETE);
+            statement.setLong(1,id);
+            if (statement.executeUpdate() == 0)
             {
                 throw new DAOException("Puede que no se haya eliminado el registro");
             }
@@ -107,31 +107,31 @@ public class MySQLPacienteDAO implements PacienteDao
         {
             throw new DAOException("Error en sql", e);
         } finally {
-            cerrarStat(stat);
+            cerrarStat(statement);
         }
 
     }
 
     @Override
     public List<Paciente> getALl() throws DAOException, SQLException {
-        PreparedStatement stat = null;
-        ResultSet rs = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         List<Paciente> pacientes = new ArrayList<>();
 
         try {
-            stat = conn.prepareStatement(GETALL);
-            rs = stat.executeQuery();
-        while(rs.next())
+            statement = conn.prepareStatement(GETALL);
+            resultSet = statement.executeQuery();
+        while(resultSet.next())
         {
-            pacientes.add(convertir(rs));
+            pacientes.add(convertir(resultSet));
 
         }
         } catch (SQLException e)
         {
             throw new DAOException("error en sql",e);
         } finally {
-            cerrarStat(stat);
-            cerrarRs(rs);
+            cerrarStat(statement);
+            cerrarRs(resultSet);
         }
         return pacientes;
     }
@@ -139,25 +139,25 @@ public class MySQLPacienteDAO implements PacienteDao
     @Override
     public Paciente getById(Long id) throws DAOException, SQLException
     {
-        PreparedStatement stat = null;
-        ResultSet rs = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         Paciente paciente = null;
 
         try {
-            stat = conn.prepareStatement(GETONE);
-            stat.setLong(1,id);
-            rs = stat.executeQuery();
-            if (rs.next())
+            statement = conn.prepareStatement(GETONE);
+            statement.setLong(1,id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next())
             {
-                paciente = convertir(rs);
+                paciente = convertir(resultSet);
 
             }
         } catch (SQLException e)
         {
             throw new DAOException("error en sql",e);
         } finally {
-            cerrarStat(stat);
-            cerrarRs(rs);
+            cerrarStat(statement);
+            cerrarRs(resultSet);
         }
         return paciente;
 
